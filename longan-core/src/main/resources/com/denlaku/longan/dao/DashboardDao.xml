@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.DashboardDao">
+
+    <sql id="baseQuery">
+        select
+        `id`,
+        `title`,
+        `desc`,
+        `tag`,
+        `theme`,
+        `style`,
+        `attr`,
+        `terminal`,
+        `tenant_id`,
+        `created_at`,
+        `updated_at`,
+        `created_by`,
+        `updated_by`
+        from `t_dashboard`
+    </sql>
+
+    <select id="get" resultMap="resultMap">
+        <include refid="baseQuery"/>
+        where id = #{id}
+    </select>
+
+    <select id="list" resultMap="resultMap">
+        <include refid="baseQuery"/>
+        <trim prefix="where" prefixOverrides="and |or">
+            <if test="title != null and title != ''">
+                and title like concat('%', #{title})
+            </if>
+        </trim>
+        order by `updated_at` desc
+    </select>
+
+    <resultMap type="com.denlaku.longan.vo.Dashboard" id="resultMap">
+        <result column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="desc" property="desc"/>
+        <result column="tag" property="tag"/>
+        <result column="style" property="style" typeHandler="com.denlaku.longan.typehandlers.MapTypeHandler"/>
+        <result column="attr" property="attr" typeHandler="com.denlaku.longan.typehandlers.MapTypeHandler"/>
+        <result column="terminal" property="terminal"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="updated_by" property="updatedBy"/>
+    </resultMap>
+
+    <insert id="add" keyProperty="id" useGeneratedKeys="true">
+        insert into `t_dashboard` (
+        `id`,
+        `title`,
+        `desc`,
+        `tag`,
+        `theme`,
+        `style`,
+        `attr`,
+        `terminal`,
+        `tenant_id`,
+        `created_by`,
+        `updated_by`,
+        `created_at`,
+        `updated_at`
+        )
+        values
+        (
+        #{id},
+        #{title},
+        #{desc},
+        #{tag},
+        #{theme},
+        #{style, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+        #{attr, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+        #{terminal},
+        #{tenantId},
+        #{createdBy},
+        #{updatedBy},
+        now(),
+        now()
+        )
+    </insert>
+
+    <update id="update">
+        update `t_dashboard` set
+        `title` = #{title},
+        `desc` = #{desc},
+        `tag` = #{tag},
+        `theme` = #{theme},
+        `style` = #{style, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+        `attr` = #{attr, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+        `updated_at` = now(),
+        `updated_by` = #{updatedBy}
+        where `id` = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from `t_dashboard` where `id` = #{id}
+    </delete>
+
+</mapper>

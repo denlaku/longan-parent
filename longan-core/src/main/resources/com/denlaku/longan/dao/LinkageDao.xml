@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.LinkageDao">
+    <select id="list" resultType="com.denlaku.longan.vo.Linkage">
+        select
+          `id`,
+          `component_id`,
+          `name`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`
+        from `t_linkage` where `component_id` = #{componentId}
+    </select>
+
+    <insert id="add">
+        insert into `t_linkage` (
+          `id`,
+          `component_id`,
+          `name`,
+          `tenant_id`,
+          `created_by`,
+          `created_at`
+        )
+        values
+          (
+            #{id},
+            #{componentId},
+            #{name},
+            #{tenantId},
+            #{createdBy},
+            now()
+          )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_linkage` where `component_id` = #{componentId}
+    </delete>
+
+</mapper>

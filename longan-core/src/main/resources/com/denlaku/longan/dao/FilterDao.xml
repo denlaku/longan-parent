@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.FilterDao">
+    <select id="list" resultMap="resultMap">
+        select
+          `id`,
+          `component_id`,
+          `name`,
+          `aggregator`,
+          `operator`,
+          `values`,
+          `tenant_id`,
+          `created_by`,
+          `created_at`
+        from `t_filter`
+    </select>
+
+    <resultMap type="com.denlaku.longan.vo.Dimension" id="resultMap">
+        <result column="id" property="id" />
+        <result column="component_id" property="componentId" />
+        <result column="name" property="name" />
+        <result column="aggregator" property="aggregator" />
+        <result column="operator" property="operator" />
+        <result column="values" property="values" typeHandler="com.denlaku.longan.typehandlers.ObjectListTypeHandler" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="create_at" property="createdAt" />
+        <result column="create_by" property="createdBy" />
+    </resultMap>
+
+    <insert id="add">
+        insert into `t_filter` (
+          `id`,
+          `component_id`,
+          `name`,
+          `aggregator`,
+          `operator`,
+          `values`,
+          `tenant_id`,
+          `created_by`,
+          `created_at`
+        )
+        values
+          (
+            #{id},
+            #{componentId},
+            #{name},
+            #{aggregator},
+            #{operator},
+            #{values, typeHandler=com.denlaku.longan.typehandlers.ObjectListTypeHandler},
+            #{tenantId},
+            #{createdBy},
+            now()
+          )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_filter` where `component_id` = #{componentId}
+    </delete>
+</mapper>

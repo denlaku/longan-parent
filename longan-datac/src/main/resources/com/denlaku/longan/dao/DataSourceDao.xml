@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.DataSourceDao">
+
+    <select id="get" resultType="com.denlaku.longan.vo.DataSourceBean">
+        <include refid="baseQuery" />
+        where id = #{id}
+    </select>
+
+    <select id="list" resultType="com.denlaku.longan.vo.DataSourceBean">
+        <include refid="baseQuery" />
+        <where>
+            <if test="type != null and type != ''">
+            `type` = #{type}
+            </if>
+        </where>
+        order by `updated_at` desc
+    </select>
+
+    <select id="getPassword" resultType="string">
+        select `password` from `t_datasource` where id = #{id}
+    </select>
+
+    <sql id="baseQuery">
+        select
+        `id`,
+        `name`,
+        `type`,
+        `url`,
+        `host`,
+        `port`,
+        `version`,
+        `username`,
+        `driver_class_name` as driverClassName,
+        `max_pool_size` as maxPoolSize,
+        `min_idle` as minIdle,
+        `max_lifetime` as maxLifetime,
+        `idle_timeout` as idleTimeout,
+        `created_by` as createdBy,
+        `updated_by` as updatedBy,
+        `created_at` as createdAt,
+        `updated_at` as updatedAt
+        from `t_datasource`
+    </sql>
+
+    <insert id="add">
+        insert into `t_datasource` (
+        `id`,
+        `name`,
+        `type`,
+        `url`,
+        `host`,
+        `port`,
+        `version`,
+        `username`,
+        `password`,
+        `driver_class_name`,
+        `tenant_id`,
+        `created_by`,
+        `updated_by`,
+        `created_at`,
+        `updated_at`
+        )
+        values
+        (
+        #{id},
+        #{name},
+        #{type},
+        #{url},
+        #{host},
+        #{port},
+        #{version},
+        #{username},
+        #{password},
+        #{driverClassName},
+        #{tenantId},
+        #{createdBy},
+        #{updatedBy},
+        now(),
+        now()
+        )
+    </insert>
+    <update id="update">
+        update `t_datasource` set
+        `name` = #{name},
+        `type` = #{type},
+        `url` = #{url},
+        `host` = #{host},
+        `port` = #{port},
+        `version` = #{version},
+        `username` = #{username},
+        `password` = #{password},
+        `driver_class_name` = #{driverClassName},
+        `updated_by` = #{updatedBy},
+        `updated_at` = now()
+        where `id` = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from `t_datasource` where `id` = #{id}
+    </delete>
+</mapper>

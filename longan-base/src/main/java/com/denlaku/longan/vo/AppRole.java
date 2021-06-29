@@ -1,0 +1,15 @@
+package com.denlaku.longan.vo;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * @author tianx
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class AppRole extends TenantBase {
+
+	private String name;
+	private short level;
+}

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.DashboardHisDao">
+
+    <select id="get" resultMap="resultMap">
+        select
+          `id`,
+          `biz_id`,
+          `dashboard`,
+          `tenant_id`,
+          `created_by`,
+          `created_at`
+        from `t_dashboard_his`
+        where id = #{id}
+    </select>
+
+    <select id="list" resultMap="resultMap">
+        select
+        `id`,
+        `biz_id`,
+        `tenant_id`,
+        `created_by`,
+        `created_at`
+        from `t_dashboard_his`
+        where `tenant_id` = #{tenantId}
+        <if test="bizId != null and bizId != ''">
+            and biz_id = #{bizId}
+        </if>
+        order by `id` desc
+    </select>
+
+    <resultMap type="com.denlaku.longan.vo.DashboardHis" id="resultMap">
+        <result column="id" property="id" />
+        <result column="biz_id" property="bizId" />
+        <result column="dashboard" property="dashboard" typeHandler="com.denlaku.longan.typehandlers.DashboardTypeHandler" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="created_by" property="createdBy" />
+        <result column="updated_by" property="updatedBy" />
+    </resultMap>
+
+    <insert id="add">
+        insert into `t_dashboard_his` (
+        `id`,
+        `biz_id`,
+        `dashboard`,
+        `tenant_id`,
+        `created_by`,
+        `created_at`
+        )
+        values
+        (
+        #{id},
+        #{bizId},
+        #{dashboard, typeHandler=com.denlaku.longan.typehandlers.DashboardTypeHandler},
+        #{tenantId},
+        #{createdBy},
+        now()
+        )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_dashboard_his` where `tenant_id` = #{tenantId}
+        <choose>
+            <when test="bizId != null and bizId != ''">
+                and `biz_id` = #{bizId}
+            </when>
+            <when test="id != null and id != ''">
+                and `id` = #{id}
+            </when>
+            <otherwise>
+                and 1 = 2
+            </otherwise>
+        </choose>
+    </delete>
+
+</mapper>

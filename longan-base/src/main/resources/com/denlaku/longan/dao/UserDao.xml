@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.UserDao">
+    <sql id="baseQuery">
+        select
+          `id`,
+          `account`,
+          `name`,
+          `nickname`,
+          `email`,
+          `phone`,
+          `status`,
+          `created_at` as createdAt,
+          `updated_at` as updatedAt,
+          `created_by` as createdBy,
+          `updated_by` as updatedBy
+        from `t_user`
+    </sql>
+    <select id="get" resultType="com.denlaku.longan.vo.User">
+        <include refid="baseQuery" />
+        <trim prefix="where" prefixOverrides="and |or">
+         <if test="id != null">
+         and id = #{id}
+         </if>
+         <if test="account != null and account != ''">
+         and account = #{account}
+         </if>
+        </trim>
+    </select>
+    <select id="list" resultType="com.denlaku.longan.vo.User">
+        <include refid="baseQuery" />
+        <trim prefix="WHERE" prefixOverrides="AND |OR">
+            <if test="name != null and name != ''">
+            and (name like concat('%', #{name}) or nickname like concat('%', #{name}) or account like concat('%', #{name}) )
+            </if>
+            <if test="account != null and account != ''">
+            and (name like concat('%', #{account}) or nickname like concat('%', #{account}) or account like concat('%', #{account}) )
+            </if>
+            <if test="accounts != null and accounts.size > 1">
+            and account in
+                <foreach collection="accounts" item="account_" open="(" close=")" separator=",">
+                    #{account_}
+                </foreach>
+            </if>
+            <if test="ids != null and ids.size > 1">
+            and id in
+                <foreach collection="ids" item="id_" open="(" close=")" separator=",">
+                    #{id_}
+                </foreach>
+            </if>
+        </trim>
+    </select>
+    <select id="listMap" resultType="com.denlaku.longan.vo.User">
+        <include refid="baseQuery" />
+        <trim prefix="WHERE" prefixOverrides="AND |OR">
+            <if test="name != null and name != ''">
+            and (name like concat('%', #{name}) or nickname like concat('%', #{name}) or account like concat('%', #{name}) )
+            </if>
+            <if test="account != null and account != ''">
+            and (name like concat('%', #{account}) or nickname like concat('%', #{account}) or account like concat('%', #{account}) )
+            </if>
+            <if test="accounts != null and accounts.size > 1">
+            and account in
+                <foreach collection="accounts" item="account_" open="(" close=")" separator=",">
+                    #{account_}
+                </foreach>
+            </if>
+            <if test="ids != null and ids.size > 1">
+            and id in
+                <foreach collection="ids" item="id_" open="(" close=")" separator=",">
+                    #{id_}
+                </foreach>
+            </if>
+        </trim>
+    </select>
+    <insert id="add" keyProperty="id" useGeneratedKeys="true">
+        insert into `t_user` (
+          `account`,
+          `name`,
+          `nickname`,
+          `email`,
+          `phone`,
+          `status`,
+          `created_at`,
+          `updated_at`,
+          `created_by`,
+          `updated_by`
+        )
+        values
+          (
+            #{account},
+            #{name},
+            #{nickname},
+            #{email},
+            #{phone},
+            '1',
+            #{createdAt},
+            #{updatedAt},
+            #{createdBy},
+            #{updatedBy}
+          )
+    </insert>
+    <update id="update">
+        update `t_user` set
+        <if test="status != null and status != ''">
+        `status` = #{status},
+        </if>
+        <if test="name != null and name != ''">
+        `name` = #{name},
+        </if>
+        <if test="nickname != null and nickname != ''">
+        `nickname` = #{nickname},
+        </if>
+        <if test="email != null and email != ''">
+        `email` = #{email},
+        </if>
+        <if test="phone != null and phone != ''">
+        `phone` = #{phone},
+        </if>
+        `updated_at` = #{updatedAt},
+        `updated_by` = #{updatedBy}
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+            and `id` = #{id},
+            </if>
+            <if test="id != null">
+            and `account` = #{account},
+            </if>
+        </trim>
+    </update>
+    <delete id="delete">
+        delete from `t_user` where `id` = #{id}
+    </delete>
+</mapper>

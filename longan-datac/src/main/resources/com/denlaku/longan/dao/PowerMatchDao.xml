@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.PowerMatchDao">
+
+    <sql id="baseQuery">
+        select
+          `id`,
+          `dataset_id`,
+          `of_id`,
+          `of_type`,
+          `space_id`,
+          `type`,
+          `code`,
+          `name`,
+          `reserve`,
+          `tenant_id`,
+          `created_by`,
+          `created_at`
+        from `t_power_match`
+    </sql>
+
+    <select id="list" resultType="com.denlaku.longan.vo.PowerMatch">
+        <include refid="baseQuery" />
+        where `dataset_id` = #{dataSetId}
+    </select>
+
+    <insert id="add">
+        insert into `t_power_match` (
+          `id`,
+          `dataset_id`,
+          `of_id`,
+          `of_type`,
+          `space_id`,
+          `type`,
+          `code`,
+          `name`,
+          `reserve`,
+          `tenant_id`,
+          `created_by`,
+          `created_at`
+        )
+        values
+          (
+            #{id},
+            #{dataSetId},
+            #{ofId},
+            #{ofType},
+            #{spaceId},
+            #{type},
+            #{code},
+            #{name},
+            #{reserve},
+            #{tenantId},
+            #{createdBy},
+            now()
+          )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_power_match` where `dataset_id` = #{dataSetId}
+    </delete>
+</mapper>

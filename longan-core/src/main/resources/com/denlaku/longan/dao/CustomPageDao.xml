@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.CustomPageDao">
+
+    <sql id="query">
+    select
+      `id`,
+      `name`,
+      `status`,
+      `remark`,
+      `tenant_id`,
+      `created_by`,
+      `created_at`,
+      `updated_by`,
+      `updated_at`
+    from `t_custom_page`
+    </sql>
+
+    <select id="list" resultType="com.denlaku.longan.vo.CustomPage">
+    <include refid="query" />
+    where `tenant_id` = #{tenantId}
+    </select>
+
+    <select id="get" resultType="com.denlaku.longan.vo.CustomPage">
+    <include refid="query" />
+    where `tenant_id` = #{tenantId} and `id` = #{id}
+    </select>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+    insert into `t_custom_page` (
+      `id`,
+      `name`,
+      `status`,
+      `remark`,
+      `tenant_id`,
+      `created_by`,
+      `created_at`,
+      `updated_by`,
+      `updated_at`
+    )
+    values
+      (
+        #{id},
+        #{name},
+        #{status},
+        #{remark},
+        #{tenantId},
+        #{createdBy},
+        now(),
+        #{updatedBy},
+        now()
+      )
+    </insert>
+
+    <insert id="update">
+    update `t_custom_page`
+    set
+      `name` = #{name},
+      `status` = #{status},
+      `remark` = #{remark},
+      `updated_by` = #{updatedBy},
+      `updated_at` = now()
+    where `id` = #{id}
+    </insert>
+
+    <delete id="delete">
+    delete from `t_custom_page` where `id` = #{id}
+    </delete>
+</mapper>

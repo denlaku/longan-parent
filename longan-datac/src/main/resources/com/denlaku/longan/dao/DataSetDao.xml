@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.DataSetDao">
+    <select id="get" resultType="com.denlaku.longan.vo.DataSet">
+        <include refid="baseQuery" />
+        where id = #{id}
+    </select>
+
+    <select id="list" resultType="com.denlaku.longan.vo.DataSet">
+        <include refid="baseQuery" />
+        order by `updated_at` desc
+    </select>
+
+    <sql id="baseQuery">
+        select
+        `id`,
+        `name`,
+        `datasource_id` as dataSourceId,
+        `type`,
+        `command`,
+        `tenant_id` as tenantId,
+        `created_by` as createdBy,
+        `updated_by` as updatedBy,
+        `created_at` as createdAt,
+        `updated_at` as updatedAt
+        from `t_dataset`
+    </sql>
+
+    <insert id="add" keyProperty="id" useGeneratedKeys="true">
+        insert into `t_dataset` (
+        `id`,
+        `name`,
+        `datasource_id`,
+        `type`,
+        `command`,
+        `created_by`,
+        `updated_by`,
+        `created_at`,
+        `updated_at`
+        )
+        values
+        (
+        #{id},
+        #{name},
+        #{dataSourceId},
+        #{type},
+        #{command},
+        #{createdBy},
+        #{updatedBy},
+        now(),
+        now()
+        )
+    </insert>
+
+    <update id="update">
+        update `t_dataset` set
+        `name` = #{name},
+        `datasource_id` = #{dataSourceId},
+        `type` = #{type},
+        `command` = #{command},
+        `updated_by` = #{updatedBy},
+        `updated_at` = now()
+        where `id` = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from `t_dataset` where `id` = #{id}
+    </delete>
+
+    <insert id="addCache">
+        insert into `t_dataset_cache` (`id`, `cache`, `tenant_id`, `created_at`, `created_by`, `updated_at`, `updated_by`)
+        values (#{id}, #{dataSet, typeHandler=com.denlaku.longan.typehandlers.DataSetTypeHandler}, #{tenantId}, now(), #{createdBy}, now(), #{updatedBy})
+    </insert>
+
+    <update id="updateCache">
+        update `t_dataset_cache`
+        set `cache` = #{dataSet, typeHandler=com.denlaku.longan.typehandlers.DataSetTypeHandler},
+        `updated_at` = now(),
+        `updated_by` = #{updatedBy}
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteCache">
+        delete from `t_dataset_cache` where `id` = #{id}
+    </delete>
+
+    <select id="getCache" resultMap="cacheResultMap">
+        select
+          `id`,
+          `cache`,
+          `tenant_id`
+        from `t_dataset_cache` where `id` = #{id}
+    </select>
+
+    <resultMap type="com.denlaku.longan.vo.DataSetCache" id="cacheResultMap">
+        <id column="id" property="id" />
+        <result column="cache" property="dataSet" typeHandler="com.denlaku.longan.typehandlers.DataSetTypeHandler" />
+        <result column="tenant_id" property="tenantId" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.LinkageAimDao">
+
+    <select id="list" resultMap="aimRM">
+        select
+          `id`,
+          `linkage_id`,
+          `component_id`,
+          `name`,
+          `placeholders`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`
+        from `t_linkage_aim` where `linkage_id` = #{linkageId}
+    </select>
+
+    <resultMap type="com.denlaku.longan.vo.LinkageAim" id="aimRM">
+        <id column="id" property="id" />
+        <result column="linkage_id" property="linkageId" />
+        <result column="component_id" property="componentId" />
+        <result column="name" property="name" />
+        <result column="placeholders" property="placeholders"
+            typeHandler="com.denlaku.longan.typehandlers.StringListTypeHandler" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_at" property="createdAt" />
+    </resultMap>
+
+    <insert id="batchAdd">
+        insert into `t_linkage_aim` (
+          `id`,
+          `linkage_id`,
+          `component_id`,
+          `name`,
+          `placeholders`,
+          `tenant_id`,
+          `created_by`,
+          `created_at`
+        )
+        values
+        <foreach collection="list" item="aim" separator=","  >
+        (
+            #{aim.id},
+            #{aim.linkageId},
+            #{aim.componentId},
+            #{aim.name},
+            #{aim.placeholders, typeHandler=com.denlaku.longan.typehandlers.StringListTypeHandler},
+            #{aim.tenantId},
+            #{aim.createdBy},
+            now()
+         )
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+        delete from `t_linkage_aim` where `linkage_id` = #{linkageId}
+    </delete>
+
+</mapper>

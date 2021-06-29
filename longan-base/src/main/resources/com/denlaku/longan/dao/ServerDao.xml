@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.ServerDao">
+    <insert id="registry" keyProperty="id" useGeneratedKeys="true">
+        insert into `t_server` (
+        `ip`,
+        `platform`,
+        `machine_id`,
+        `create_at`,
+        `update_at`
+        )
+        select
+        #{ip},
+        #{platform},
+        ifnull((max(`machine_id`) + 1) % 1024, 0),
+        now(),
+        now()
+        from `t_server`
+    </insert>
+    <select id="get" resultType="com.denlaku.longan.vo.Server">
+        select
+        `ip`,
+        `platform`,
+        `machine_id` as machineId,
+        `create_at` as createAt,
+        `update_at` as updateAt
+        from `t_server`
+        where `ip` like concat('%', #{ip}, '%')
+    </select>
+    <update id="update">
+        update `t_server` set `update_at` = now() where `ip` like concat('%', #{ip}, '%')
+    </update>
+</mapper>

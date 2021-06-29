@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.DataSetFieldDao">
+
+    <sql id="baseQuery">
+        select
+        `id`,
+        `dataset_id` as dataSetId,
+        `name`,
+        `alias`,
+        `type`,
+        `data_type` as dataType,
+        `jdbc_type` as jdbcType,
+        `format`,
+        `tenant_id` as tenantId,
+        `created_at` as createdAt,
+        `created_by` as createdBy
+        from `t_dataset_field`
+    </sql>
+
+    <select id="list" resultType="com.denlaku.longan.vo.DataSetField">
+        <include refid="baseQuery" />
+        where dataset_id = #{dataSetId}
+    </select>
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        insert into `t_dataset_field` (
+        `id`,
+        `dataset_id`,
+        `name`,
+        `alias`,
+        `type`,
+        `data_type`,
+        `jdbc_type`,
+        `format`,
+        `tenant_id`,
+        `created_by`,
+        `created_at`
+        )
+        values
+        (
+        #{id},
+        #{dataSetId},
+        #{name},
+        #{alias},
+        #{type},
+        #{dataType},
+        #{jdbcType},
+        #{format},
+        #{tenantId},
+        #{createdBy},
+        now()
+        )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_dataset_field` where dataset_id = #{dataSetId}
+    </delete>
+</mapper>

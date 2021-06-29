@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.SequenceDao">
+    <select id="nextVal" resultType="long">
+        select `value` from t_sequence where `name` = #{seqName}
+    </select>
+    <insert id="init">
+        insert into t_sequence (`name`, `value`, `step`)
+        select #{seqName}, 0, 1 from dual where not exists (select 1 from t_sequence where `name` = #{seqName});
+        update t_sequence set value = `value` + `step` where `name` = #{seqName}
+    </insert>
+</mapper>

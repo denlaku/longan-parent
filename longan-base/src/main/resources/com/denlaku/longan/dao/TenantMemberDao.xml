@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.TenantMemberDao">
+    <sql id="baseQuery">
+        select
+        `id`,
+        `tenant_id` as tenantId,
+        `user_id` as userId,
+        `created_at` as createdAt
+        from `t_tenant_member`
+    </sql>
+    <select id="get" resultType="com.denlaku.longan.vo.TenantMember">
+        <include refid="baseQuery" />
+        <trim prefix="where" prefixOverrides="and |or">
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </trim>
+    </select>
+    <select id="list" resultType="com.denlaku.longan.vo.TenantMember">
+        <include refid="baseQuery" />
+        <trim prefix="WHERE" prefixOverrides="AND |OR">
+            <if test="tenantId != null and tenantId != ''">
+                and tenantId = #{tenantId}
+            </if>
+        </trim>
+    </select>
+    <insert id="add">
+        insert into `t_tenant_member` (
+        `tenant_id`,
+        `user_id`,
+        `created_at`
+        )
+        values
+        (
+        #{tenantId},
+        #{userId},
+        now()
+        )
+    </insert>
+    <delete id="delete">
+        delete from `t_tenant_member` where `id` = #{id}
+    </delete>
+</mapper>

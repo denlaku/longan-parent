@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.DataPowerSpaceDao">
+    <sql id="baseQuery">
+        select
+        `id`,
+        `name`,
+        `tenant_id` as tenantId,
+        `created_at` as createdAt,
+        `created_by` as createdBy,
+        `updated_at` as updatedAt,
+        `updated_by` as updatedBy
+        from
+        `t_datapower_space`
+    </sql>
+    <select id="get"
+        resultType="com.denlaku.longan.vo.DataPowerSpace">
+        <include refid="baseQuery" />
+        <trim prefix="where" prefixOverrides="and |or">
+            and tenant_id = #{tenantId}
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </trim>
+    </select>
+    <select id="list"
+        resultType="com.denlaku.longan.vo.DataPowerSpace">
+        <include refid="baseQuery" />
+        <trim prefix="WHERE" prefixOverrides="AND |OR">
+            and tenant_id = #{tenantId}
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name})
+            </if>
+        </trim>
+    </select>
+    <insert id="add" keyProperty="id" useGeneratedKeys="true">
+        insert into `t_datapower_space` (
+        `id`,
+        `name`,
+        `tenant_id`,
+        `created_at`,
+        `created_by`,
+        `updated_at`,
+        `updated_by`
+        )
+        values
+        (
+        #{id},
+        #{name},
+        #{tenantId},
+        now(),
+        #{createdBy},
+        now(),
+        #{updatedBy}
+        )
+
+    </insert>
+    <update id="update">
+        update `t_datapower_space` set
+        `name` = #{name}
+        where `id` = #{id}
+    </update>
+    <delete id="delete">
+        delete from `t_datapower_space` where `id` = #{id}
+    </delete>
+</mapper>

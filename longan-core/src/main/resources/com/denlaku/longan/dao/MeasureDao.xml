@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.MeasureDao">
+
+    <select id="list" resultMap="resultMap">
+        select
+          `id`,
+          `component_id`,
+          `name`,
+          `aggregator`,
+          `attr`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`
+        from `t_measure`
+    </select>
+
+    <resultMap type="com.denlaku.longan.vo.Measure" id="resultMap">
+        <result column="id" property="id" />
+        <result column="component_id" property="componentId" />
+        <result column="name" property="name" />
+        <result column="aggregator" property="aggregator" />
+        <result column="attr" property="attr"
+            typeHandler="com.denlaku.longan.typehandlers.MapTypeHandler" />
+        <result column="create_at" property="createdAt" />
+        <result column="create_by" property="createdBy" />
+    </resultMap>
+
+    <insert id="add">
+        insert into `t_measure` (
+          `id`,
+          `component_id`,
+          `name`,
+          `aggregator`,
+          `attr`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`
+        )
+        values
+          (
+            #{id},
+            #{componentId},
+            #{name},
+            #{aggregator},
+            #{attr, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+            #{tenantId},
+            now(),
+            #{createdBy}
+          )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_measure` where `component_id` = #{componentId}
+    </delete>
+</mapper>

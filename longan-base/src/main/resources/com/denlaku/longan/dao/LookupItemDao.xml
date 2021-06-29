@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.LookupItemDao">
+    <insert id="add">
+        insert into `t_lookup_item` (
+            `id`,
+            `lookup_code`,
+            `code`,
+            `name`,
+            `desc`,
+            `language`,
+            `tenant_id`,
+            `created_at`,
+            `created_by`,
+            `updated_at`,
+            `updated_by`
+        )
+        values
+        (
+            #{id},
+            #{lookupCode},
+            #{code},
+            #{name},
+            #{desc},
+            #{language},
+            #{tenantId},
+            now(),
+            #{createdBy},
+            now(),
+            #{updatedBy}
+        )
+    </insert>
+    <sql id="baseQuery">
+        select
+            `id`,
+            `lookup_code`,
+            `code`,
+            `name`,
+            `desc`,
+            `language`,
+            `tenant_id`,
+            `created_at`,
+            `created_by`,
+            `updated_at`,
+            `updated_by`
+        from `t_lookup_item`
+    </sql>
+    <select id="list" resultType="com.denlaku.longan.vo.LookupItem">
+        <include refid="baseQuery" />
+        where `tenant_id` = #{tenantId}
+        <if test="lookupCode != null and lookupCode != ''">
+            and `lookup_code` = #{lookupCode}
+        </if>
+        <if test="language != null and language != ''">
+            and `language` = #{language}
+        </if>
+    </select>
+    <delete id="delete">
+        delete from `t_lookup_item` where `tenant_id` = #{tenantId} and `lookup_code` = #{lookupCode}
+    </delete>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.PlaceholderDao">
+
+    <sql id="baseQuery">
+        select
+        `id`,
+        `dataset_id` as dataSetId,
+        `name`,
+        `type`,
+        `def_value` as defValue,
+        `format`,
+        `delimiter`,
+        `tenant_id` as tenantId,
+        `created_at` as createdAt,
+        `created_by` as createdBy
+        from `t_placeholder`
+    </sql>
+
+    <select id="get" resultType="com.denlaku.longan.vo.Placeholder">
+        <include refid="baseQuery" />
+        where `dataset_id` = #{dataSetId}
+    </select>
+
+    <select id="list" resultType="com.denlaku.longan.vo.Placeholder">
+        <include refid="baseQuery" />
+        where `dataset_id` = #{dataSetId}
+    </select>
+
+    <insert id="add">
+        insert into `t_placeholder` (
+        `dataset_id`,
+        `name`,
+        `type`,
+        `def_value`,
+        `format`,
+        `delimiter`,
+        `tenant_id`,
+        `created_at`,
+        `created_by`
+        )
+        values
+        (
+        #{dataSetId},
+        #{name},
+        #{type},
+        #{defValue},
+        #{format},
+        #{delimiter},
+        #{tenantId},
+        now(),
+        #{createdBy}
+        )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_placeholder` where `dataset_id` = #{dataSetId}
+    </delete>
+</mapper>

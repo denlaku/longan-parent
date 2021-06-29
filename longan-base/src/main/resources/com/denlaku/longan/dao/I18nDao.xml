@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.I18nDao">
+    <insert id="add" keyProperty="id" useGeneratedKeys="true">
+        insert into `t_i18n` (
+          `id`,
+          `key`,
+          `text`,
+          `desc`,
+          `language`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`,
+          `updated_at`,
+          `updated_by`
+        )
+        values
+          (
+            #{id},
+            #{key},
+            #{text},
+            #{desc},
+            #{language},
+            #{tenantId},
+            #{createdAt},
+            #{createdBy},
+            #{updatedAt},
+            #{updated_by}
+          )
+    </insert>
+    <delete id="delete">
+        delete from `t_lookup` where `tenant_id` = #{tenantId} and id=#{id}
+    </delete>
+    <update id="update">
+        update `t_lookup`
+        set
+          `key` = #{key},
+          `text` = #{text},
+          `desc` = #{desc},
+          `language` = #{language},
+          `updated_at` = now(),
+          `updated_by` = #{updatedBy}
+        where `tenant_id` = #{tenantId} and id=#{id}
+    </update>
+    <sql id="baseQuery">
+        select
+          `id`,
+          `key`,
+          `text`,
+          `desc`,
+          `language`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`,
+          `updated_at`,
+          `updated_by`
+        from `t_lookup`
+    </sql>
+    <select id="get" resultType="com.denlaku.longan.vo.I18n">
+        <include refid="baseQuery" />
+        where `tenant_id` = #{tenantId} and `key`=#{key} and `language`=#{language}
+    </select>
+    <select id="list" resultType="com.denlaku.longan.vo.I18n">
+        <include refid="baseQuery" />
+        where `tenant_id` = #{tenantId}
+        <if test="key != null and key != ''">
+            and `key` like concat('%', #{key}, '%')
+        </if>
+        <if test="text != null and text != ''">
+            and `text` like concat('%', #{text}, '%')
+        </if>
+        <if test="language != null and language != ''">
+            and `language` like concat('%', #{language}, '%')
+        </if>
+        <if test="desc != null and desc != ''">
+            and `desc` like concat('%', #{desc}, '%')
+        </if>
+    </select>
+</mapper>

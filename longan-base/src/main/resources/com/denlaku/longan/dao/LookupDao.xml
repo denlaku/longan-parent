@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.LookupDao">
+    <insert id="add">
+        insert into `t_lookup` (
+          `id`,
+          `code`,
+          `name_cn`,
+          `name_en`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`,
+          `updated_at`,
+          `updated_by`
+        )
+        values
+          (
+            #{id},
+            #{code},
+            #{nameCn},
+            #{nameEn},
+            #{tenantId},
+            #{createdAt},
+            #{createdBy},
+            #{updatedAt},
+            #{updated_by}
+          )
+    </insert>
+    <delete id="delete">
+        delete from `t_lookup` where `tenant_id` = #{tenantId} and id=#{id}
+    </delete>
+    <delete id="update">
+        update `t_lookup`
+        set
+          `code` = #{code},
+          `name_cn` = #{nameCn},
+          `name_en` = #{nameEn},
+          `updated_at` = now(),
+          `updated_by` = #{updatedBy}
+        where `tenant_id` = #{tenantId} and id=#{id}
+    </delete>
+    <sql id="baseQuery">
+        select
+          `id`,
+          `code`,
+          `name_cn`,
+          `name_en`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`,
+          `updated_at`,
+          `updated_by`
+        from `t_lookup`
+    </sql>
+    <select id="get" resultType="com.denlaku.longan.vo.Lookup">
+        <include refid="baseQuery" />
+        where `tenant_id` = #{tenantId} and id=#{id}
+    </select>
+    <select id="list" resultType="com.denlaku.longan.vo.Lookup">
+        <include refid="baseQuery" />
+        where `tenant_id` = #{tenantId}
+        <if test="code != null and code != ''">
+            and `code` like concat('%', #{code}, '%')
+        </if>
+        <if test="nameCn != null and nameCn != ''">
+            and `name_cn` like concat('%', #{nameCn}, '%')
+        </if>
+        <if test="nameEn != null and nameEn != ''">
+            and `name_en` like concat('%', #{nameEn}, '%')
+        </if>
+    </select>
+</mapper>

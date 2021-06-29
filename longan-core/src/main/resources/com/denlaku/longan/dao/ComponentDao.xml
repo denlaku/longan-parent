@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.ComponentDao">
+
+    <sql id="baseQuery">
+        select
+          `id`,
+          `dashboard_id`,
+          `name`,
+          `dataset_id`,
+          `type`,
+          `grid`,
+          `style`,
+          `attr`,
+          `parent_id`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`
+        from `t_component`
+    </sql>
+
+    <resultMap type="com.denlaku.longan.vo.Component"
+        id="resultMap">
+        <result column="id" property="id" />
+        <result column="dashboard_id" property="dashboardId" />
+        <result column="name" property="name" />
+        <result column="dataset_id" property="dataSetId" />
+        <result column="type" property="type" />
+        <result column="grid" property="grid"
+            typeHandler="com.denlaku.longan.typehandlers.MapTypeHandler" />
+        <result column="type" property="type" />
+        <result column="style" property="style"
+            typeHandler="com.denlaku.longan.typehandlers.MapTypeHandler" />
+        <result column="attr" property="attr"
+            typeHandler="com.denlaku.longan.typehandlers.MapTypeHandler" />
+        <result column="parent_id" property="parentId" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="created_at" property="createdAt" />
+        <result column="created_by" property="createdBy" />
+    </resultMap>
+
+    <select id="get" resultMap="resultMap">
+        <include refid="baseQuery" />
+        where id = #{id}
+    </select>
+
+    <select id="list" resultMap="resultMap">
+        <include refid="baseQuery" />
+        where dashboard_id = #{dashboardId}
+    </select>
+
+    <insert id="add">
+    insert into `t_component` (
+      `id`,
+      `dashboard_id`,
+      `name`,
+      `dataset_id`,
+      `type`,
+      `grid`,
+      `style`,
+      `attr`,
+      `parent_id`,
+      `tenant_id`,
+      `created_at`,
+      `created_by`
+    )
+    values
+      (
+        #{id},
+        #{dashboardId},
+        #{name},
+        #{dataSetId},
+        #{type},
+        #{grid, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+        #{style, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+        #{attr, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+        #{parentId},
+        #{tenantId},
+        now(),
+        #{createdBy}
+      )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_component` where `id` = #{id}
+    </delete>
+
+    <select id="getCache" resultMap="cacheMap">
+        select `id`,`dashboard_id`, `tenant_id`, `cache` from `t_component_cache` where id = #{id}
+    </select>
+
+    <select id="listCache" resultMap="cacheMap">
+        select `id`,`dashboard_id`, `tenant_id`, `cache` from `t_component_cache` where dashboard_id = #{dashboardId}
+    </select>
+
+    <resultMap type="com.denlaku.longan.vo.ComponentCache" id="cacheMap">
+        <result column="id" property="id" />
+        <result column="dashboard_id" property="dashboardId" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="cache" property="component"
+            typeHandler="com.denlaku.longan.typehandlers.ComponentTypeHandler" />
+    </resultMap>
+
+    <insert id="addCache">
+        insert into `t_component_cache` (`id`, `dashboard_id`, `tenant_id`, `created_at`, `created_by`, `cache`)
+        values (#{id}, #{dashboardId}, #{tenantId}, now(), #{createdBy},
+        #{component, typeHandler=com.denlaku.longan.typehandlers.ComponentTypeHandler})
+    </insert>
+
+    <update id="deleteCache">
+        delete from `t_component_cache` where `id` = #{id}
+    </update>
+</mapper>

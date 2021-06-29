@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.DimensionDao">
+    <select id="list" resultMap="resultMap">
+        select
+          `id`,
+          `component_id`,
+          `name`,
+          `attr`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`
+        from `t_dimension`
+    </select>
+
+    <resultMap type="com.denlaku.longan.vo.Dimension" id="resultMap">
+        <result column="id" property="id" />
+        <result column="component_id" property="componentId" />
+        <result column="name" property="name" />
+        <result column="attr" property="attr"
+            typeHandler="com.denlaku.longan.typehandlers.MapTypeHandler" />
+        <result column="create_at" property="createdAt" />
+        <result column="create_by" property="createdBy" />
+    </resultMap>
+
+    <insert id="add">
+        insert into `t_dimension` (
+          `id`,
+          `component_id`,
+          `name`,
+          `attr`,
+          `tenant_id`,
+          `created_at`,
+          `created_by`
+        )
+        values
+          (
+            #{id},
+            #{componentId},
+            #{name},
+            #{attr, typeHandler=com.denlaku.longan.typehandlers.MapTypeHandler},
+            #{tenantId},
+            now(),
+            #{createdBy}
+          )
+    </insert>
+
+    <delete id="delete">
+        delete from `t_dimension` where `component_id` = #{componentId}
+    </delete>
+</mapper>

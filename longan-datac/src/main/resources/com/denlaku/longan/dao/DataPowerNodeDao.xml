@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.denlaku.longan.dao.DataPowerNodeDao">
+    <sql id="baseQuery">
+        select `id`,
+        `space_id`,
+        `type`,
+        `code`,
+        `name`,
+        `tenant_id` as tenantId,
+        `created_at` as createdAt,
+        `created_by` as createdBy,
+        `updated_at` as updatedAt,
+        `updated_by` as updatedBy
+        from `t_datapower_node`
+    </sql>
+    <select id="get" resultType="com.denlaku.longan.vo.DataPowerNode">
+        <include refid="baseQuery" />
+        <trim prefix="where" prefixOverrides="and |or">
+            and `tenant_id` = #{tenantId}
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </trim>
+    </select>
+    <select id="list" resultType="com.denlaku.longan.vo.DataPowerNode">
+        <include refid="baseQuery" />
+        <trim prefix="WHERE" prefixOverrides="AND |OR">
+            and `tenant_id` = #{tenantId}
+            <if test="spaceId != null and spaceId != ''">
+            and	`space_id` = #{spaceId}
+            </if>
+            <if test="spaceIds != null and spaceIds.size > 0">
+            and	`space_id` in
+                <foreach collection="spaceIds" item="spaceId" open="(" separator="," close=")">
+                #{spaceId}
+                </foreach>
+            </if>
+        </trim>
+    </select>
+    <insert id="batchAdd">
+        insert into `t_datapower_node` (
+        `id`,
+        `space_id`,
+        `type`,
+        `code`,
+        `name`,
+        `reserve`,
+        `tenant_id`,
+        `created_at`,
+        `created_by`,
+        `updated_at`,
+        `updated_by`
+        )
+        values
+        <foreach collection="list" item="dp" separator=",">
+        (
+        #{dp.id},
+        #{dp.spaceId},
+        #{dp.type},
+        #{dp.code},
+        #{dp.name},
+        #{dp.reserve},
+        #{dp.tenantId},
+        now(),
+        #{dp.createdBy},
+        now(),
+        #{dp.updatedBy}
+        )
+        </foreach>
+    </insert>
+    <update id="update">
+        update `t_tenant` set
+        `name` = #{name},
+        `code` = #{code}
+        where `id` = #{id}
+    </update>
+    <delete id="delete">
+        delete from `t_datapower_node` where 1=2
+        <if test="id != null and id != ''">
+        or `id` = #{id}
+        </if>
+        <if test="spaceId != null and spaceId != ''">
+        or space_id = #{spaceId}
+        </if>
+    </delete>
+</mapper>
