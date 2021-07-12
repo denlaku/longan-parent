@@ -3,6 +3,8 @@ package com.denlaku.longan.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.denlaku.longan.util.Lists;
+import com.denlaku.longan.util.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,10 @@ public class DashboardViewController {
 
 	@ApiOperation(value = "搜索")
 	@GetMapping("/search")
-	public Return<List<Map<String, String>>> search(String keyword) {
+	public Return<List<Map<String, String>>> search(@RequestParam("keyword") String keyword) {
+		if (Strings.isEmpty(keyword)) {
+			return Resp.success(Lists.empty());
+		}
 		List<Map<String, String>> result = dashboardService.search(keyword);
 		return Resp.success(result);
 	}

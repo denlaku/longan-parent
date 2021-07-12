@@ -187,6 +187,18 @@ public class DashboardService {
 		Field nameField = new Field("title", dashboard.getTitle(), nameType);
 		document.add(nameField);
 
+		FieldType terminalType = new FieldType();
+		terminalType.setTokenized(false);
+		terminalType.setStored(true);
+		Field terminalField = new Field("terminal", dashboard.getTerminal(), terminalType);
+		document.add(terminalField);
+
+		FieldType bizType = new FieldType();
+		bizType.setTokenized(false);
+		bizType.setStored(true);
+		Field bizField = new Field("biz", "dashboard", bizType);
+		document.add(bizField);
+
 		Objects.ifPresent(dashboard.getDesc(), desc -> {
 			FieldType descType = new FieldType();
 			descType.setTokenized(true);
